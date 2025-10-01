@@ -1,4 +1,3 @@
-
 "use client";
 import { useEffect, useMemo, useState } from "react";
 
@@ -149,7 +148,7 @@ export default function Page() {
         <button
           onClick={buildDeck}
           className="px-3 py-1 rounded-2xl border shadow-sm disabled:opacity-50"
-          disabled={lockBoard}
+          // disabled={lockBoard} ← この行を削除
         >
           リセット
         </button>
@@ -168,44 +167,3 @@ export default function Page() {
     </main>
   );
 }
-
-// "use client";
-// import { useState } from "react";
-
-// export default function Page() {
-//   // 状態を 0 で初期化
-//   const stateArray = useState(0);
-
-//   console.log("stateArray の中身:", stateArray);
-
-//   // 分割代入を使わずに取り出す
-//   const count1 = stateArray[0];
-//   const setCount1 = stateArray[1];
-
-//   // 分割代入を使って取り出す
-//   const [count2, setCount2] = useState(0);
-
-//   return (
-//     <main className="p-6">
-//       <h1>useState 実験</h1>
-//       <p>count1: {count1}</p>
-//       <p>count2: {count2}</p>
-//       <button
-//         className="border px-3 py-1"
-//         onClick={() => {
-//           setCount1(count1 + 1); // 普通に配列アクセスで更新
-//         }}
-//       >
-//         setCount1 を使って +1
-//       </button>
-//       <button
-//         className="border px-3 py-1 ml-2"
-//         onClick={() => {
-//           setCount2(count2 + 1); // 分割代入で取り出した更新関数を使って更新
-//         }}
-//       >
-//         setCount2 を使って +1
-//       </button>
-//     </main>
-//   );
-// }
