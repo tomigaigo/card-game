@@ -1,6 +1,6 @@
 
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 // カード型
 type Card = {
@@ -19,9 +19,12 @@ export default function Page() {
   const [lockBoard, setLockBoard] = useState(false);
   const [message, setMessage] = useState("カードをめくってね！");
   const [gameOver, setGameOver] = useState(false);
+  const timeoutsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   // 初期化 & リセット
   const buildDeck = () => {
+    timeoutsRef.current.forEach(clearTimeout);
+    timeoutsRef.current = [];
     // 8枚(4ペア) + ジョーカー1枚 = 9枚
     const normals = pairSymbols.flatMap((s) => [
       { symbol: s, isJoker: false },
@@ -78,7 +81,7 @@ export default function Page() {
 
       if (first.symbol === second.symbol) {
         // 揃った！
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
           setCards((current) => {
             const c = current.slice();
             c[firstIndex] = { ...c[firstIndex], isMatched: true };
@@ -95,10 +98,12 @@ export default function Page() {
           } else {
             setMessage("✅ 揃いました！続けてね");
           }
+          timeoutsRef.current = timeoutsRef.current.filter((id) => id !== timeoutId);
         }, 250);
+        timeoutsRef.current.push(timeoutId);
       } else {
         // ちがう → 自動で裏へ
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
           setCards((current) => {
             const c = current.slice();
             c[firstIndex] = { ...c[firstIndex], isFlipped: false };
@@ -109,7 +114,9 @@ export default function Page() {
           setSecondIndex(null);
           setLockBoard(false);
           setMessage("❌ ちがいました。もう一度！");
+          timeoutsRef.current = timeoutsRef.current.filter((id) => id !== timeoutId);
         }, 700);
+        timeoutsRef.current.push(timeoutId);
       }
     }
   };
@@ -149,7 +156,6 @@ export default function Page() {
         <button
           onClick={buildDeck}
           className="px-3 py-1 rounded-2xl border shadow-sm disabled:opacity-50"
-          disabled={lockBoard}
         >
           リセット
         </button>
