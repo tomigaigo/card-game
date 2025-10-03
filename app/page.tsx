@@ -1,4 +1,4 @@
-"use client";
+use client;
 import { useEffect, useMemo, useState } from "react";
 
 // カード型
@@ -53,11 +53,14 @@ export default function Page() {
     next[idx] = { ...card, isFlipped: true };
     setCards(next);
 
-    // ジョーカーなら即敗北
+    // ジョーカーなら即敗北＋自動リセット
     if (card.isJoker) {
       setMessage("🃏 ジョーカー！負けです… リセットしてもう一度！");
       setGameOver(true);
       setLockBoard(true);
+      setTimeout(() => {
+        buildDeck();
+      }, 1000); // 1秒後に自動リセット
       return;
     }
 
@@ -148,7 +151,6 @@ export default function Page() {
         <button
           onClick={buildDeck}
           className="px-3 py-1 rounded-2xl border shadow-sm disabled:opacity-50"
-          // disabled={lockBoard} ← この行を削除
         >
           リセット
         </button>
